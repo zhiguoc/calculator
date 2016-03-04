@@ -10,7 +10,9 @@ To run the program:
 
 $ java -jar calculator-1.0-SNAPSHOT-jar-with-dependencies.jar "add(1,2)"
 
-To generate code coverage report (current report >90%):
+result=3
+
+To generate code coverage report (current coverage >90%):
 
 $ mvn cobertura:cobertura
 

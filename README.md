@@ -12,7 +12,7 @@ $ java -jar calculator-1.0-SNAPSHOT-jar-with-dependencies.jar "add(1,2)"
 
 result=3
 
-To generate code coverage report (current coverage >90%):
+To generate code unit test coverage report (current test coverage >90%):
 
 $ mvn cobertura:cobertura
 

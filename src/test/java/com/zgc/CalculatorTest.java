@@ -2,6 +2,7 @@ package com.zgc;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Assert;
 
 /**
  * Unit test
@@ -20,6 +21,7 @@ public class CalculatorTest
    @Test
    public void testNormal()
    {
-      //TODO:
+      result = calc.calculate("add(1,2)");
+      Assert.assertEquals("3", result);
    }
 }

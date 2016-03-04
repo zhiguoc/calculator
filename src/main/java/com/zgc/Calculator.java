@@ -3,8 +3,8 @@ package com.zgc;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
 import com.google.common.math.IntMath;
 
 public class Calculator
@@ -15,6 +15,7 @@ public class Calculator
    private static final String COMMA = ",";
    private Map<String, Integer> vars;
    private static final Logger logger = Logger.getLogger(Calculator.class);
+   private final MyLogger myLogger;
 
    private enum Operator
    {
@@ -58,6 +59,44 @@ public class Calculator
       }
    }
 
+   private class MyLogger
+   {
+      // my app logger with three levels: ERROR, INFO, DEBUG
+      final String level;
+
+      MyLogger(final String level)
+      {
+         this.level = level;
+      }
+
+      public void error(final String message)
+      {
+         // always print error
+         logger.info("Error - " + message);
+      }
+
+      public void info(final String message)
+      {
+         if (!level.equals("ERROR"))
+         {
+            logger.info("Info  - " + message);
+         }
+      }
+
+      public void debug(final String message)
+      {
+         if (level.equals("DEBUG"))
+         {
+            logger.info("Debug - " + message);
+         }
+      }
+   }
+
+   public Calculator(final String logLevel)
+   {
+      this.myLogger = new MyLogger(logLevel);
+   }
+
    public String calculate(final String input)
    {
       vars = new HashMap<String, Integer>();
@@ -67,32 +106,31 @@ public class Calculator
          if (input.length() > MAX_INPUT_LENGTH)
          {
             final String message = "Error:input is too long";
-            logger.error(message);
+            myLogger.error(message);
             return message;
          }
 
-         final int result = calculate(0, input);
+         final int result = calculate(0, input.replaceAll("\\s", ""));
 
          return Integer.toString(result);
       }
       catch (Exception e)
       {
          final String message = "Error:" + e.getMessage();
-         logger.error(message);
+         myLogger.error(message);
          return message;
       }
    }
 
-   private int calculate(final int level, final String origInput)
+   private int calculate(final int level, final String input)
    {
       final int nextLevel = level + 1;
 
-      final String input = origInput.trim();
-      logger.info(getLogIndetion(level) + "calculating " + input + ", level=" + level);
+      myLogger.info(getLogIndetion(level) + "calculating " + input + ", level=" + level);
       if (isInteger(input))
       {
          final int result = Integer.valueOf(input);
-         logger.info(getLogIndetion(level) + "result=" + result);
+         myLogger.info(getLogIndetion(level) + "result=" + result);
          return result;
       }
 
@@ -101,7 +139,7 @@ public class Calculator
          if (vars.containsKey(input))
          {
             final int result = vars.get(input);
-            logger.info(getLogIndetion(level) + "result=" + result);
+            myLogger.info(getLogIndetion(level) + "result=" + result);
             return result;
          }
          throw new IllegalArgumentException("variable is not set: " + input);
@@ -117,16 +155,16 @@ public class Calculator
 
       final String opStr = input.substring(0, beginParamIndex);
       final Operator op = Operator.fromString(opStr);
-      logger.info(getLogIndetion(level) + "op=" + op);
+      myLogger.info(getLogIndetion(level) + "op=" + op);
       final String params = input.substring(beginParamIndex + 1, endParamIndex);
-      logger.info(getLogIndetion(level) + "params=" + params);
+      myLogger.info(getLogIndetion(level) + "params=" + params);
 
       if (op == Operator.ASSIGN)
       {
          final Variable var = getVar(level + 1, params);
          vars.put(var.name, var.value);
          final int result = calculate(level, var.formula);
-         logger.info(getLogIndetion(level) + "result=" + result);
+         myLogger.info(getLogIndetion(level) + "result=" + result);
          return result;
       }
       final Param param = getParam(level, params);
@@ -151,7 +189,7 @@ public class Calculator
             throw new IllegalStateException("op should be known" + op);
       }
 
-      logger.info(getLogIndetion(level) + "result=" + result);
+      myLogger.info(getLogIndetion(level) + "result=" + result);
       return result;
    }
 
@@ -164,15 +202,15 @@ public class Calculator
          throw new IllegalArgumentException("invalid variable name " + name);
       }
 
-      logger.debug(getLogIndetion(level) + "var name=" + name);
+      myLogger.debug(getLogIndetion(level) + "var name=" + name);
 
-      final String restParams = param.right.trim();
+      final String restParams = param.right;
       param = getParam(level + 1, restParams);
 
       final int value = calculate(level + 1, param.left);
 
-      logger.debug(getLogIndetion(level) + "var value=" + value);
-      logger.debug(getLogIndetion(level) + "var fomular=" + param.right);
+      myLogger.debug(getLogIndetion(level) + "var value=" + value);
+      myLogger.debug(getLogIndetion(level) + "var fomular=" + param.right);
 
       return new Variable(name, value, param.right);
    }
@@ -211,8 +249,8 @@ public class Calculator
       if (openBracketIndex == -1)
       {
          final String[] splitted = params.split(COMMA);
-         result.left = splitted[0].trim();
-         result.right = splitted[1].trim();
+         result.left = splitted[0];
+         result.right = splitted[1];
          return result;
       }
 
@@ -233,17 +271,17 @@ public class Calculator
 
       final String leftParam = params.substring(0, leftParamEndIndex);
 
-      logger.debug(getLogIndetion(level) + "left param=" + leftParam);
+      myLogger.debug(getLogIndetion(level) + "left param=" + leftParam);
 
       result.left = leftParam;
-      String rightParam = params.substring(leftParamEndIndex).trim();
+      String rightParam = params.substring(leftParamEndIndex);
       if (!rightParam.startsWith(","))
       {
          throw new IllegalArgumentException("malformed params " + params);
       }
       rightParam = rightParam.substring(1);
 
-      logger.debug(getLogIndetion(level) + "right param=" + rightParam);
+      myLogger.debug(getLogIndetion(level) + "right param=" + rightParam);
       result.right = rightParam;
       return result;
    }

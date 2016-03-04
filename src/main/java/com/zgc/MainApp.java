@@ -1,7 +1,6 @@
 package com.zgc;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
+import java.util.Arrays;
 import org.apache.log4j.Logger;
 
 /**
@@ -17,7 +16,7 @@ public class MainApp
 
       if (args.length == 0 || args.length > 2)
       {
-         final String message = "invalid number of parameters";
+         final String message = "invalid number of parameters:" + Arrays.toString(args);
          logger.warn(message);
          System.out.println(message);
       }
@@ -25,42 +24,28 @@ public class MainApp
       {
          final String input = args[0];
 
-         String inputLevel = "ERROR";
+         String level = "ERROR";
          if (args.length == 2)
          {
-            inputLevel = args[1];
+            level = args[1].toUpperCase();
          }
 
-         Level level = null;
-         if ("ERROR".equalsIgnoreCase(inputLevel))
+         if ("ERROR".equals(level) || "INFO".equals(level) || "DEBUG".equals(level))
          {
-            level = Level.ERROR;
-         }
-         else if ("INFO".equalsIgnoreCase(inputLevel))
-         {
-            level = Level.INFO;
-         }
-         else if ("DEBUG".equalsIgnoreCase(inputLevel))
-         {
-            level = Level.ALL;
-         }
-         else
-         {
-            final String message = "invalid level (must be ERROR,INFO,DEBUG)" + inputLevel;
-            logger.warn(message);
-            System.out.println(message);
-         }
+            Calculator calc = new Calculator(level);
 
-         if (level != null)
-         {
-            // TODO:set level
-            Calculator calc = new Calculator();
             String result = calc.calculate(input);
             System.out.println("result=" + result);
 
             logger.info("<MainApp> input=" + input);
             logger.info("<MainApp> level=" + level);
             logger.info("<MainApp> result=" + result);
+         }
+         else
+         {
+            final String message = "invalid level (must be ERROR,INFO,DEBUG)" + level;
+            logger.warn(message);
+            System.out.println(message);
          }
       }
 

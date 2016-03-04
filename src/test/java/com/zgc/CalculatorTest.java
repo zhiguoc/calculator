@@ -16,7 +16,7 @@ public class CalculatorTest
    @Before
    public void setup()
    {
-      calc = new Calculator();
+      calc = new Calculator("ERROR");
    }
 
    @Test
@@ -70,6 +70,9 @@ public class CalculatorTest
       Assert.assertEquals("40", result);
 
       result = calc.calculate("  let(a,   let(b,10,add(b  ,b)),  let(b,20,add(a,b))) ");
+      Assert.assertEquals("40", result);
+
+      result = calc.calculate("  let (a,   let(b,10,add  (b  ,b)),  let(b,20,add(a,b))) ");
       Assert.assertEquals("40", result);
    }
 
@@ -127,7 +130,7 @@ public class CalculatorTest
       result = calc.calculate("sub(8, 9a)");
       Assert.assertTrue(result.startsWith("Error:"));
 
-      result = calc.calculate("9 99");
+      result = calc.calculate("9 99(");
       Assert.assertTrue(result.startsWith("Error:"));
 
       result = calc.calculate("add(1, 99 a)");

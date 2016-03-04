@@ -17,7 +17,7 @@ To generate code coverage report (current coverage >90%):
 $ mvn cobertura:cobertura
 
 
-Assumptions:
+Assumptions and usage info:
 
 The assignment operator ("let") remembers the variable value globally.
 
@@ -33,6 +33,7 @@ Arithmetic operation can cause exception such as overflow or div by zero. The er
 
 Should be able to run on any standard java environment although tested on Linux platform only.
 
-To do:
+Customized logger layer using log4j with three level control (ERROR, INFO, DEBUG) for the Calculator class. Optinally set by the second parameter, for example: 
 
-set the log4j level dynamically
+$ java -jar calculator-1.0-SNAPSHOT-jar-with-dependencies.jar "add(1,add(2,2))" DEBUG
+

@@ -31,7 +31,7 @@ The "div" function returns only the integer part, for example: div(9,2) = 4
 
 Arithmetic operation can cause exception such as overflow or div by zero. The error result is shown accordingly.
 
-Tested on Linux platform
+Should be able to run on any standard java environment although tested on Linux platform only.
 
 To do:
 

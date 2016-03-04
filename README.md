@@ -19,7 +19,7 @@ $ mvn cobertura:cobertura
 
 Assumptions:
 
-The assignment operator ("let") remembers the variable values globally.
+The assignment operator ("let") remembers the variable value globally.
 
 Input expression string length cannot be greater 256.
 
@@ -28,6 +28,8 @@ The space in the input string is ignored.
 Arithmetic functions (add,sub,mult,div) and "let" operator are case-insenstive.
 
 The "div" function returns only the integer part, for example: div(9,2) = 4
+
+Arithmetic operation can cause exception such as overflow or div by zero. The error result is shown accordingly.
 
 Tested on Linux platform
 
